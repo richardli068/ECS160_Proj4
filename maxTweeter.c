@@ -21,8 +21,8 @@ bool isValid(const char* filePath);
 // helpers
 bool readLine(FILE *fp, char* line);
 int splitLine(char* line,
-              char lineList[(MAX_LINE_LENGTH - 1) / 2][MAX_LINE_LENGTH]);
-int processHeader(char header[(MAX_LINE_LENGTH - 1) / 2][MAX_LINE_LENGTH]
+              char lineList[(MAX_LINE_LENGTH - 1) / 2 + 1][MAX_LINE_LENGTH]);
+int processHeader(char header[(MAX_LINE_LENGTH - 1) / 2 + 1][MAX_LINE_LENGTH]
                   , int numField);
 
 void printInvalidAndExit(void);
@@ -84,9 +84,9 @@ isValid(const char* filePath)
   // split line
   // line guaranteed to be <= MAX_LINE_LENGTH
   // correctly handles \0
-  // [(MAX_LINE_LENGTH - 1) / 2][]: in case all field has length 1
+  // [(MAX_LINE_LENGTH - 1) / 2 + 1][]: in case all fields have length 1
   // [][MAX_LINE_LENGTH]: in case only 1 field
-  char lineList[(MAX_LINE_LENGTH - 1) / 2][MAX_LINE_LENGTH];
+  char lineList[(MAX_LINE_LENGTH - 1) / 2 + 1][MAX_LINE_LENGTH];
   
   // numFiled: number of fields in the header line
   int numField = splitLine(line, lineList);
@@ -118,7 +118,7 @@ isValid(const char* filePath)
 
 /*******************************************************************************
  ********************              Helpers              ************************
- *******************************************************************************/
+ ******************************************************************************/
 
 
 // return true on valid line read
@@ -144,7 +144,7 @@ readLine(FILE *fp, char* line)
 // return number of tokens appended
 int
 splitLine(char* line,
-          char lineList[(MAX_LINE_LENGTH - 1) / 2][MAX_LINE_LENGTH])
+          char lineList[(MAX_LINE_LENGTH - 1) / 2 + 1][MAX_LINE_LENGTH])
 {
   char* token;
   
@@ -163,7 +163,7 @@ splitLine(char* line,
 // return index of the name field if valid name field is found
 // return -1 if none or multiple found
 int
-processHeader(char header[(MAX_LINE_LENGTH - 1) / 2][MAX_LINE_LENGTH]
+processHeader(char header[(MAX_LINE_LENGTH - 1) / 2 + 1][MAX_LINE_LENGTH]
               , int numField)
 {
   const char* name1 = "name";
@@ -195,6 +195,7 @@ printInvalidAndExit(void)
   printf("Invalid Input Format\n");
   exit(EXIT_SUCCESS);
 }
+
 /*******************************************************************************
  ***************              Validation Checkers              ******************
  *******************************************************************************/
