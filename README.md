@@ -20,7 +20,10 @@
  
  
  
- ### Testing files: <br />
+### Testing files: <br />
    * **"cl-tweets-short.csv"**: original csv from HW3 <br />
    * **"test.csv"**: first 2 line from "cl-tweets-short.csv" <br />
    * **"short.csv"**: first 100 line from "cl-tweets-short.csv". Used to fuzz test.
+
+### Current fuzzing progress:
+	* "short.csv": no crashes after 6 cycles. Implies no crush on "cl-tweets-short.csv" and "test.csv".
