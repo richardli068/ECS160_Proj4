@@ -4,12 +4,12 @@
  Sanjana Rajasekar <br />
  Richard Li
  
- **maxTweeter.c**: <br /> 
+### maxTweeter.c <br /> 
 &nbsp;&nbsp; Usage: <br />
 &nbsp;&nbsp;&nbsp;&nbsp; ./maxTweeter.out `<csv_file>` <br />
 &nbsp;&nbsp; Prints `<tweeter>`:`<count>` <br />
    
- **mapCmp.cpp**: <br />
+### mapCmp.cpp <br />
 &nbsp;&nbsp; Usage: <br />
 &nbsp;&nbsp;&nbsp;&nbsp; ./mapCmp.out `<my_map>` `<answer_map>` <br />
 &nbsp;&nbsp; File format: <br />
