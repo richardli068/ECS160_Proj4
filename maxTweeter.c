@@ -16,18 +16,30 @@
 #define MAX_LINE_COUNT 20000
 #define MAX_TWEETER_COUNT 6228
 
-bool isValid(const char* filePath);
+// struct
+typedef struct map
+{
+  char name[MAX_LINE_LENGTH];
+  int count;
+} Map;
+bool isMapEmpty(const Map m);
+int hasKey(const Map maps[MAX_TWEETER_COUNT]
+           , const char name[MAX_LINE_LENGTH], const int size);
+void printMap(const Map m);
+
+
+bool isValid(const char* filePath, Map maps[MAX_TWEETER_COUNT], int* size);
+
 
 // helpers
 bool readLine(FILE *fp, char* line);
 int splitLine(char* line,
               char lineList[(MAX_LINE_LENGTH - 1) / 2 + 1][MAX_LINE_LENGTH]);
-int processHeader(char header[(MAX_LINE_LENGTH - 1) / 2 + 1][MAX_LINE_LENGTH]
-                  , int numField);
-
+int processHeader(const char header[(MAX_LINE_LENGTH - 1) / 2 + 1][MAX_LINE_LENGTH]
+                  , const int numField);
+bool processBodyLine(char line[LINE_LENGTH], const int totalField
+                     , const int nameField, char name[MAX_LINE_LENGTH]);
 void printInvalidAndExit(void);
-// validation checkers
-
 
 
 int main(int argc, const char * argv[]) {
@@ -40,20 +52,61 @@ int main(int argc, const char * argv[]) {
   
   const char* filePath = argv[1];
   
+  Map maps[MAX_TWEETER_COUNT];
+  int* size = (int*) malloc(sizeof(int));
+  *size = 0;
+  
   // invalid csv
-  if(!isValid(filePath))
+  if(!isValid(filePath, maps, size))
   {
     printInvalidAndExit();
   }
   
   // valid csv
   // TODO
-  
+  for (int i = 0; i < *size; i++)
+  {
+    printMap(maps[i]);
+  }
   return 0;
 }
 
+
+
+/*******************************************************************************
+ *********************              Struct              ************************
+ ******************************************************************************/
+
+bool isMapEmpty(const Map m)
+{
+  if (m.count == 0) return true;
+  else return false;
+}
+
+
+// size: the size of the maps. greatly reduce computation complexity
+
+// returns index if key found in maps
+// return -1 if not found
+int hasKey(const Map maps[MAX_TWEETER_COUNT]
+           , const char name[MAX_LINE_LENGTH], const int size)
+{
+  for (int i = 0; i < size; i++)
+  {
+    if (strcmp(maps[i].name, name) == 0) return i;
+  }
+  return -1;
+}
+
+
+void printMap(const Map m)
+{
+  printf("%s:%d\n", m.name, m.count);
+}
+
+
 bool
-isValid(const char* filePath)
+isValid(const char* filePath, Map maps[MAX_TWEETER_COUNT], int* size)
 {
   // invalid condition:
   // no header -> no name inplies no header.            DONE
@@ -73,6 +126,7 @@ isValid(const char* filePath)
     printf("Error opening file\n");
     return false;
   }
+  
   
   // Process header line
   //----------------------------------------------------------------------------
@@ -100,13 +154,29 @@ isValid(const char* filePath)
   //----------------------------------------------------------------------------
   while(readLine(fp, line))
   {
-    // do something here
+//    printf("%s\n", line);
+    char name[MAX_LINE_LENGTH];
+    if (!processBodyLine(line, numField, nameIndex, name))
+      printInvalidAndExit();
+    
+    int insertIndex;
+    if ((insertIndex = hasKey(maps, name, *size)) == -1)
+    {
+      // not found key
+      strcpy(maps[*size].name, name);
+      maps[*size].count = 1;
+      (*size)++;
+    }
+    else // found
+    {
+      maps[insertIndex].count++;
+    }
     lineCount++;
   }
   
   // check if only header is present
   if (lineCount == 1) return false;
-  
+  if (lineCount > MAX_LINE_COUNT) return false;
   
   //----------------------------------------------------------------------------
   // Finish processing body
@@ -119,7 +189,6 @@ isValid(const char* filePath)
 /*******************************************************************************
  ********************              Helpers              ************************
  ******************************************************************************/
-
 
 // return true on valid line read
 // return false on invalid line read
@@ -163,8 +232,8 @@ splitLine(char* line,
 // return index of the name field if valid name field is found
 // return -1 if none or multiple found
 int
-processHeader(char header[(MAX_LINE_LENGTH - 1) / 2 + 1][MAX_LINE_LENGTH]
-              , int numField)
+processHeader(const char header[(MAX_LINE_LENGTH - 1) / 2 + 1][MAX_LINE_LENGTH]
+              , const int numField)
 {
   const char* name1 = "name";
   const char* name2 = "\"name\"";
@@ -189,15 +258,30 @@ processHeader(char header[(MAX_LINE_LENGTH - 1) / 2 + 1][MAX_LINE_LENGTH]
 }
 
 
+// line: a line in body
+// totalField: total number of fields as seen in the header
+// nameField: index of the nameField
+// name: the string name is stored in
+// return true if name is successfully copied
+// return false if error occurs
+bool
+processBodyLine(char line[LINE_LENGTH], const int totalField
+                , const int nameField, char name[MAX_LINE_LENGTH])
+{
+  char lineList[(MAX_LINE_LENGTH - 1) / 2 + 1][MAX_LINE_LENGTH];
+  int numFields = splitLine(line, lineList);
+  
+  // check if current line has all fields defined by header
+  if (numFields != totalField) return false;
+  
+  strcpy(name, lineList[nameField]);
+  return true;
+}
+
+
 void
 printInvalidAndExit(void)
 {
   printf("Invalid Input Format\n");
   exit(EXIT_SUCCESS);
 }
-
-/*******************************************************************************
- ***************              Validation Checkers              ******************
- *******************************************************************************/
-
-
