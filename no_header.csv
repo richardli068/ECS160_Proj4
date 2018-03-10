@@ -1,4 +1,3 @@
-"","tweet_id","airline_sentiment","airline_sentiment_confidence","negativereason","negativereason_confidence","airline","airline_sentiment_gold","name","negativereason_gold","retweet_count","text","tweet_coord","tweet_created","tweet_location","user_timezone"
 "1","1292390400","neutral","1","","","Delta","","JetBlueNews","","0","@JetBlue's new CEO seeks the right balance to please passengers and Wall ... - Greenfield Daily Reporter http://t.co/LM3opxkxch","","2015-02-16 23:36:05 -0800","USA","Sydney"
 "2","1741189120","negative","1","Can't Tell","0.6503","Delta","","nesi_1992","","0","@JetBlue is REALLY getting on my nerves !! 😡😡 #nothappy","","2015-02-16 23:43:02 -0800","undecided","Pacific Time (US & Canada)"
 "3","-1542963200","negative","1","Late Flight","0.346","United","","CPoutloud","","0","@united yes. We waited in line for almost an hour to do so. Some passengers just left not wanting to wait past 1am.","","2015-02-16 23:48:48 -0800","Washington DC",""
@@ -98,3 +97,4 @@
 "97","1351106560","negative","1","Late Flight","0.6787","US Airways","","JasonPlizga","","0","@USAirways How soon is possible? I boarded the plane the 1st time at 6:30 am and it is now after 11:30 am and I'm still where I started.","","2015-02-17 08:44:05 -0800","",""
 "98","1988640768","negative","1","Late Flight","1","US Airways","","DAngel082","","0","@USAirways  well its 11:45am and just got an email that my 11am flight is delayed-thats not right","","2015-02-17 08:45:42 -0800","New York",""
 "99","1640505344","negative","1","Customer Service Issue","1","United","","mlipschits","","0","@united why am i mot getting my refund?","","2015-02-17 08:46:46 -0800","Jerusalem-London-Antwerp",""
+"100","1648914432","neutral","0","","0","Delta","","heyheyman","","0","@JetBlue Can't view seat selection/change seat for flight tomorrow. Can you look into this?","","2015-02-17 08:46:58 -0800","Boston MA","Eastern Time (US & Canada)"

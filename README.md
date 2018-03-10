@@ -24,6 +24,8 @@
    * **"cl-tweets-short.csv"**: original csv from HW3 <br />
    * **"test.csv"**: first 2 line from "cl-tweets-short.csv" <br />
    * **"short.csv"**: first 100 line from "cl-tweets-short.csv". Used to fuzz test.
+   * **"no_header.csv"**: first 100 tweets from "cl-tweets-short.csv" w/o header.
+   * **"incosis_field_num.csv"**: first 101 lines from "cl-tweets-short.csv". Tweet #97 has 1 less field.
 
-### Current fuzzing progress:
+### Current fuzzing progress: <br />
 	* "short.csv": no crashes after 6 cycles. Implies no crush on "cl-tweets-short.csv" and "test.csv".
