@@ -111,10 +111,10 @@ isValid(const char* filePath, Map maps[MAX_TWEETER_COUNT], int* size)
 {
   // invalid condition:
   // no header -> no name inplies no header.            DONE
-  // only have header                                   Done
+  // only have header                                   DONE
   // line too long                                      DONE in readLine
-  // more than 20,000 lins                              Done
-  // more than 6228 tweeters                            Done
+  // more than 20,000 lins                              DONE
+  // more than 6228 tweeters                            DONE
   // no additional comma inside tweets                  Assumpiton
   
   FILE *fp = fopen(filePath, "r");
