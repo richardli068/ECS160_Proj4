@@ -63,7 +63,6 @@ int main(int argc, const char * argv[]) {
   }
   
   // valid csv
-  // TODO
   for (int i = 0; i < *size; i++)
   {
     printMap(maps[i]);
@@ -105,15 +104,17 @@ void printMap(const Map m)
 }
 
 
+
+
 bool
 isValid(const char* filePath, Map maps[MAX_TWEETER_COUNT], int* size)
 {
   // invalid condition:
   // no header -> no name inplies no header.            DONE
-  // only have header
+  // only have header                                   Done
   // line too long                                      DONE in readLine
-  // more than 20,000 lins
-  // more than 6228 tweeters
+  // more than 20,000 lins                              Done
+  // more than 6228 tweeters                            Done
   // no additional comma inside tweets                  Assumpiton
   
   FILE *fp = fopen(filePath, "r");
@@ -166,12 +167,16 @@ isValid(const char* filePath, Map maps[MAX_TWEETER_COUNT], int* size)
       strcpy(maps[*size].name, name);
       maps[*size].count = 1;
       (*size)++;
+      
+      // check if tweeter count exceeds max amount
+      if ((*size) > MAX_TWEETER_COUNT) return false;
     }
     else // found
     {
       maps[insertIndex].count++;
     }
     lineCount++;
+    
     // check if file is too large
     if (lineCount > MAX_LINE_COUNT) return false;
   }
