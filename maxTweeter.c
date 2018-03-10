@@ -11,7 +11,7 @@
 #include <string.h>
 
 // include \n, exclude \0
-#define MAX_LINE_LENGTH 375
+#define MAX_LINE_LENGTH 376
 #define LINE_LENGTH 400
 #define MAX_LINE_COUNT 20000
 #define MAX_TWEETER_COUNT 6228
@@ -154,12 +154,12 @@ isValid(const char* filePath, Map maps[MAX_TWEETER_COUNT], int* size)
   //----------------------------------------------------------------------------
   while(readLine(fp, line))
   {
-//    printf("%s\n", line);
+    //    printf("%s\n", line);
     char name[MAX_LINE_LENGTH];
-    if (!processBodyLine(line, numField, nameIndex, name))
-      printInvalidAndExit();
+    if (!processBodyLine(line, numField, nameIndex, name)) return false;
     
     int insertIndex;
+    
     if ((insertIndex = hasKey(maps, name, *size)) == -1)
     {
       // not found key
@@ -172,15 +172,18 @@ isValid(const char* filePath, Map maps[MAX_TWEETER_COUNT], int* size)
       maps[insertIndex].count++;
     }
     lineCount++;
+    // check if file is too large
+    if (lineCount > MAX_LINE_COUNT) return false;
   }
   
   // check if only header is present
   if (lineCount == 1) return false;
-  if (lineCount > MAX_LINE_COUNT) return false;
   
   //----------------------------------------------------------------------------
   // Finish processing body
   
+//  test lineCount
+//  printf("line processed: %d\n", lineCount);
   fclose(fp);
   return true;
 }
