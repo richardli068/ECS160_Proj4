@@ -15,30 +15,31 @@
 #define LINE_LENGTH 400
 #define MAX_LINE_COUNT 20000
 #define MAX_TWEETER_COUNT 6228
+#define TWEETER_COUNT 6250
 
 // struct
 typedef struct map
 {
-  char name[MAX_LINE_LENGTH];
+  char name[LINE_LENGTH];
   int count;
 } Map;
 bool isMapEmpty(const Map m);
-int hasKey(const Map maps[MAX_TWEETER_COUNT]
-           , const char name[MAX_LINE_LENGTH], const int size);
+int hasKey(const Map maps[TWEETER_COUNT]
+           , const char name[LINE_LENGTH], const int size);
 void printMap(const Map m);
 
 
-short isValid(const char* filePath, Map maps[MAX_TWEETER_COUNT], int* size);
+short isValid(const char* filePath, Map maps[TWEETER_COUNT], int* size);
 
 
 // helpers
 short readLine(FILE *fp, char* line);
 int splitLine(char* line,
-              char lineList[(MAX_LINE_LENGTH - 1) / 2 + 1][MAX_LINE_LENGTH]);
-int processHeader(char header[(MAX_LINE_LENGTH - 1) / 2 + 1][MAX_LINE_LENGTH]
+              char lineList[(LINE_LENGTH - 1) / 2 + 1][LINE_LENGTH]);
+int processHeader(char header[(LINE_LENGTH - 1) / 2 + 1][LINE_LENGTH]
                   , const int numField);
 bool processBodyLine(char line[LINE_LENGTH], const int totalField
-                     , const int nameField, char name[MAX_LINE_LENGTH]);
+                     , const int nameField, char name[LINE_LENGTH]);
 void printInvalidAndExit(void);
 void printError(short error);
 
@@ -80,7 +81,7 @@ int main(int argc, const char * argv[]) {
   //  8: No tweets
   short error = -1;
   
-  Map maps[MAX_TWEETER_COUNT];
+  Map maps[TWEETER_COUNT];
   int* size = (int*) malloc(sizeof(int));
   *size = 0;
   
@@ -118,8 +119,8 @@ isMapEmpty(const Map m)
 // returns index if key found in maps
 // return -1 if not found
 int
-hasKey(const Map maps[MAX_TWEETER_COUNT]
-           , const char name[MAX_LINE_LENGTH], const int size)
+hasKey(const Map maps[TWEETER_COUNT]
+           , const char name[LINE_LENGTH], const int size)
 {
   for (int i = 0; i < size; i++)
   {
@@ -139,7 +140,7 @@ printMap(const Map m)
 
 
 short
-isValid(const char* filePath, Map maps[MAX_TWEETER_COUNT], int* size)
+isValid(const char* filePath, Map maps[TWEETER_COUNT], int* size)
 {
   FILE *fp = fopen(filePath, "r");
   char line[LINE_LENGTH];
@@ -158,11 +159,11 @@ isValid(const char* filePath, Map maps[MAX_TWEETER_COUNT], int* size)
   lineCount++;
   
   // split line
-  // line guaranteed to be <= MAX_LINE_LENGTH
+  // line guaranteed to be <= LINE_LENGTH
   // correctly handles \0
-  // [(MAX_LINE_LENGTH - 1) / 2 + 1][]: in case all fields have length 1
-  // [][MAX_LINE_LENGTH]: in case only 1 field
-  char lineList[(MAX_LINE_LENGTH - 1) / 2 + 1][MAX_LINE_LENGTH];
+  // [(LINE_LENGTH - 1) / 2 + 1][]: in case all fields have length 1
+  // [][LINE_LENGTH]: in case only 1 field
+  char lineList[(LINE_LENGTH - 1) / 2 + 1][LINE_LENGTH];
   
   // numFiled: number of fields in the header line
   int numField = splitLine(line, lineList);
@@ -177,7 +178,7 @@ isValid(const char* filePath, Map maps[MAX_TWEETER_COUNT], int* size)
   while(readLine(fp, line) == 0)
   {
     //    printf("%s\n", line);
-    char name[MAX_LINE_LENGTH];
+    char name[LINE_LENGTH];
     if (!processBodyLine(line, numField, nameIndex, name)) return 5;
     
     int insertIndex;
@@ -240,7 +241,7 @@ readLine(FILE *fp, char* line)
 // return number of tokens appended
 int
 splitLine(char* line,
-          char lineList[(MAX_LINE_LENGTH - 1) / 2 + 1][MAX_LINE_LENGTH])
+          char lineList[(LINE_LENGTH - 1) / 2 + 1][LINE_LENGTH])
 {
   char* token;
   
@@ -249,7 +250,7 @@ splitLine(char* line,
   int count;
   for (count = 0; token; count++)
   {
-    memcpy(lineList[count], token, MAX_LINE_LENGTH);
+    memcpy(lineList[count], token, LINE_LENGTH);
     token = strtok(NULL, ",");
   }
   return count;
@@ -259,7 +260,7 @@ splitLine(char* line,
 // return index of the name field if valid name field is found
 // return -1 if none or multiple found
 int
-processHeader(char header[(MAX_LINE_LENGTH - 1) / 2 + 1][MAX_LINE_LENGTH]
+processHeader(char header[(LINE_LENGTH - 1) / 2 + 1][LINE_LENGTH]
               , const int numField)
 {
   const char* name1 = "name";
@@ -298,9 +299,9 @@ processHeader(char header[(MAX_LINE_LENGTH - 1) / 2 + 1][MAX_LINE_LENGTH]
 // return false if error occurs
 bool
 processBodyLine(char line[LINE_LENGTH], const int totalField
-                , const int nameField, char name[MAX_LINE_LENGTH])
+                , const int nameField, char name[LINE_LENGTH])
 {
-  char lineList[(MAX_LINE_LENGTH - 1) / 2 + 1][MAX_LINE_LENGTH];
+  char lineList[(LINE_LENGTH - 1) / 2 + 1][LINE_LENGTH];
   int numFields = splitLine(line, lineList);
   
   // check if current line has all fields defined by header
