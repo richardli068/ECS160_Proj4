@@ -28,11 +28,11 @@ int hasKey(const Map maps[MAX_TWEETER_COUNT]
 void printMap(const Map m);
 
 
-bool isValid(const char* filePath, Map maps[MAX_TWEETER_COUNT], int* size);
+short isValid(const char* filePath, Map maps[MAX_TWEETER_COUNT], int* size);
 
 
 // helpers
-bool readLine(FILE *fp, char* line);
+short readLine(FILE *fp, char* line);
 int splitLine(char* line,
               char lineList[(MAX_LINE_LENGTH - 1) / 2 + 1][MAX_LINE_LENGTH]);
 int processHeader(const char header[(MAX_LINE_LENGTH - 1) / 2 + 1][MAX_LINE_LENGTH]
@@ -40,25 +40,54 @@ int processHeader(const char header[(MAX_LINE_LENGTH - 1) / 2 + 1][MAX_LINE_LENG
 bool processBodyLine(char line[LINE_LENGTH], const int totalField
                      , const int nameField, char name[MAX_LINE_LENGTH]);
 void printInvalidAndExit(void);
+void printError(short error);
 
 
 int main(int argc, const char * argv[]) {
+  const char option[10] = "-r";
+  
   // no command line input
-  if (argc != 2)
+  // or only option
+  if (argc < 2 || (argc == 2 && strcmp(argv[1], option) == 0))
   {
-    printf("No Input\n");
-    return 0;
+    printf("Usage: ./maxTweeter.out [-option] <file>\n");
+    exit(EXIT_SUCCESS);
   }
   
-  const char* filePath = argv[1];
+  const char* filePath;
+  bool printInvalidReason = false;
+  
+  if (argc > 2)
+  {
+    if (strcmp(option, argv[1]) == 0) printInvalidReason = true;
+    // if more arguments are passed in, ignore all after the 2nd one
+    filePath = argv[2];
+  }
+  else // argc must be 2
+  {
+    filePath = argv[1];
+  }
+
+  // error code:
+  // -1: No error
+  //  1: Error opening file
+  //  2: No header
+  //  3: Line too long
+  //  4: No name or multiple name fields
+  //  5: Body line missing field(s)
+  //  6: Too many tweeters
+  //  7: File too large
+  //  8: No tweets
+  short error = -1;
   
   Map maps[MAX_TWEETER_COUNT];
   int* size = (int*) malloc(sizeof(int));
   *size = 0;
   
   // invalid csv
-  if(!isValid(filePath, maps, size))
+  if((error = isValid(filePath, maps, size)) != -1)
   {
+    if (printInvalidReason) printError(error);
     printInvalidAndExit();
   }
   
@@ -76,7 +105,8 @@ int main(int argc, const char * argv[]) {
  *********************              Struct              ************************
  ******************************************************************************/
 
-bool isMapEmpty(const Map m)
+bool
+isMapEmpty(const Map m)
 {
   if (m.count == 0) return true;
   else return false;
@@ -87,7 +117,8 @@ bool isMapEmpty(const Map m)
 
 // returns index if key found in maps
 // return -1 if not found
-int hasKey(const Map maps[MAX_TWEETER_COUNT]
+int
+hasKey(const Map maps[MAX_TWEETER_COUNT]
            , const char name[MAX_LINE_LENGTH], const int size)
 {
   for (int i = 0; i < size; i++)
@@ -98,7 +129,8 @@ int hasKey(const Map maps[MAX_TWEETER_COUNT]
 }
 
 
-void printMap(const Map m)
+void
+printMap(const Map m)
 {
   printf("%s:%d\n", m.name, m.count);
 }
@@ -106,34 +138,23 @@ void printMap(const Map m)
 
 
 
-bool
+short
 isValid(const char* filePath, Map maps[MAX_TWEETER_COUNT], int* size)
 {
-  // invalid condition:
-  // no header -> no name inplies no header.            DONE
-  // only have header                                   DONE
-  // line too long                                      DONE in readLine
-  // more than 20,000 lins                              DONE
-  // more than 6228 tweeters                            DONE
-  // no additional comma inside tweets                  Assumpiton
-  
   FILE *fp = fopen(filePath, "r");
   char line[LINE_LENGTH];
   short lineCount = 0;
   
   // Error opening file
-  if (!fp)
-  {
-    printf("Error opening file\n");
-    return false;
-  }
-  
+  if (!fp) return 1;
   
   // Process header line
   //----------------------------------------------------------------------------
   // read first line
   // check if line is too long and if file is empty
-  if(!readLine(fp, line)) return false;
+  int readLineCode = readLine(fp, line);
+  if (readLineCode == 1) return 2;
+  else if (readLineCode == 2) return 3;
   lineCount++;
   
   // split line
@@ -147,17 +168,17 @@ isValid(const char* filePath, Map maps[MAX_TWEETER_COUNT], int* size)
   int numField = splitLine(line, lineList);
   int nameIndex = processHeader(lineList, numField);
   // check if no name or multiple name's are present
-  if (nameIndex == -1) return false;
+  if (nameIndex == -1) return 4;
   //----------------------------------------------------------------------------
   // Finish processing header line
   
   // Process body
   //----------------------------------------------------------------------------
-  while(readLine(fp, line))
+  while(readLine(fp, line) == 0)
   {
     //    printf("%s\n", line);
     char name[MAX_LINE_LENGTH];
-    if (!processBodyLine(line, numField, nameIndex, name)) return false;
+    if (!processBodyLine(line, numField, nameIndex, name)) return 5;
     
     int insertIndex;
     
@@ -168,8 +189,8 @@ isValid(const char* filePath, Map maps[MAX_TWEETER_COUNT], int* size)
       maps[*size].count = 1;
       (*size)++;
       
-      // check if tweeter count exceeds max amount
-      if ((*size) > MAX_TWEETER_COUNT) return false;
+      // check if tweeter count exceeds the max amount
+      if ((*size) > MAX_TWEETER_COUNT) return 6;
     }
     else // found
     {
@@ -178,19 +199,16 @@ isValid(const char* filePath, Map maps[MAX_TWEETER_COUNT], int* size)
     lineCount++;
     
     // check if file is too large
-    if (lineCount > MAX_LINE_COUNT) return false;
+    if (lineCount > MAX_LINE_COUNT) return 7;
   }
   
   // check if only header is present
-  if (lineCount == 1) return false;
-  
+  if (lineCount == 1) return 8;
   //----------------------------------------------------------------------------
   // Finish processing body
-  
-//  test lineCount
-//  printf("line processed: %d\n", lineCount);
+
   fclose(fp);
-  return true;
+  return -1;
 }
 
 
@@ -198,22 +216,23 @@ isValid(const char* filePath, Map maps[MAX_TWEETER_COUNT], int* size)
  ********************              Helpers              ************************
  ******************************************************************************/
 
-// return true on valid line read
-// return false on invalid line read
-bool
+// return 0 on valid line read
+// return 1 on EOF
+// return 2 on line too long
+short
 readLine(FILE *fp, char* line)
 {
   if (!fgets(line, LINE_LENGTH, fp))
   {
     // EOF or empty file
-    return false;
+    return 1;
   }
   else
   {
     // successfully read. Check line length
-    if (strlen(line) > MAX_LINE_LENGTH) return false;
+    if (strlen(line) > MAX_LINE_LENGTH) return 2;
   }
-  return true;
+  return 0;
 }
 
 
@@ -292,4 +311,49 @@ printInvalidAndExit(void)
 {
   printf("Invalid Input Format\n");
   exit(EXIT_SUCCESS);
+}
+
+
+// error code:
+// -1: No error
+//  1: Error opening file
+//  2: No header
+//  3: Line too long
+//  4: No name or multiple name fields
+//  5: Body line missing field(s)
+//  6: Too many tweeters
+//  7: File too large
+//  8: No tweets
+void printError(short error)
+{
+  switch (error) {
+    case 1:
+      printf("Error opening file\n");
+      break;
+    case 2:
+      // empty file implies no header
+      printf("No header\n");
+      break;
+    case 3:
+      printf("Line too long\n");
+      break;
+    case 4:
+      printf("No name field or multiple name fields\n");
+      break;
+    case 5:
+      printf("Body line missing field(s)\n");
+      break;
+    case 6:
+      printf("Too many tweeters\n");
+      break;
+    case 7:
+      printf("File too large\n");
+      break;
+    case 8:
+      printf("No tweets\n");
+      break;
+      
+    default:
+      break;
+  }
 }
