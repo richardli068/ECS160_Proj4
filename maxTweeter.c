@@ -2,7 +2,6 @@
 //  maxTweeter.c
 //  maxTweeter
 //
-//  Created by Richard Li on 3/8/18.
 //
 
 #include <stdio.h>
@@ -175,7 +174,8 @@ isValid(const char* filePath, Map maps[TWEETER_COUNT], int* size)
   
   // Process body
   //----------------------------------------------------------------------------
-  while(readLine(fp, line) == 0)
+  int error;
+  while((error = readLine(fp, line)) == 0)
   {
     //    printf("%s\n", line);
     char name[LINE_LENGTH];
@@ -203,6 +203,8 @@ isValid(const char* filePath, Map maps[TWEETER_COUNT], int* size)
     if (lineCount > MAX_LINE_COUNT) return 7;
   }
   
+  // check is line is too long
+  if (error == 2) return 3;
   // check if only header is present
   if (lineCount == 1) return 8;
   //----------------------------------------------------------------------------

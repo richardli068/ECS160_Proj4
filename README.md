@@ -21,14 +21,14 @@
 ### Testing files:
    * **"cl-tweets-short.csv"**: original csv from HW3 <br />
    * **"test.csv"**: first 2 line from "cl-tweets-short.csv" <br />
-   * **"short.csv"**: first 100 line from "cl-tweets-short.csv". Used to fuzz test.
-   * **"no_header.csv"**: first 100 tweets from "cl-tweets-short.csv" w/o header.
-   * **"incosis_field_num.csv"**: first 101 lines from "cl-tweets-short.csv". Tweet #97 has 1 less field.
-   * **"too_large.csv"**: 5 copies of "cl-tweets-short.csv".
-   * **"empty.csv"**: empty file.
-   * **"too_many_tweeter.csv"**: "cl-tweets-short.csv" plus one extra tweeter.
+   * **"short.csv"**: first 100 line from "cl-tweets-short.csv". Used to fuzz test
+   * **"no_header.csv"**: first 100 tweets from "cl-tweets-short.csv" w/o header
+   * **"incosis_field_num.csv"**: first 101 lines from "cl-tweets-short.csv". Tweet #97 has 1 less field
+   * **"too_large.csv"**: 5 copies of "cl-tweets-short.csv"
+   * **"empty.csv"**: empty file
+   * **"too_many_tweeter.csv"**: "cl-tweets-short.csv" plus one extra tweeter
    * **"only_name.csv"**: only name fields from "cl-tweets-short.csv"
-   * **"too_long_line.csv"**: line too long.
+   * **"too_long_line.csv"**: line too long
    * **"20001_lines.csv"**: 20001 lines
 
 
