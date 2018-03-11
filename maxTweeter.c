@@ -35,7 +35,7 @@ short isValid(const char* filePath, Map maps[MAX_TWEETER_COUNT], int* size);
 short readLine(FILE *fp, char* line);
 int splitLine(char* line,
               char lineList[(MAX_LINE_LENGTH - 1) / 2 + 1][MAX_LINE_LENGTH]);
-int processHeader(const char header[(MAX_LINE_LENGTH - 1) / 2 + 1][MAX_LINE_LENGTH]
+int processHeader(char header[(MAX_LINE_LENGTH - 1) / 2 + 1][MAX_LINE_LENGTH]
                   , const int numField);
 bool processBodyLine(char line[LINE_LENGTH], const int totalField
                      , const int nameField, char name[MAX_LINE_LENGTH]);
@@ -259,17 +259,22 @@ splitLine(char* line,
 // return index of the name field if valid name field is found
 // return -1 if none or multiple found
 int
-processHeader(const char header[(MAX_LINE_LENGTH - 1) / 2 + 1][MAX_LINE_LENGTH]
+processHeader(char header[(MAX_LINE_LENGTH - 1) / 2 + 1][MAX_LINE_LENGTH]
               , const int numField)
 {
   const char* name1 = "name";
   const char* name2 = "\"name\"";
   int nameField = -1;
   
+  
   for (int i = 0; i < numField; i++)
   {
-    // delete
-    // printf("%s\n", header[i]);
+    // if last character is newline, strip it
+    if (header[i][strlen(header[i]) - 1] == '\n')
+    {
+      header[i][strlen(header[i]) - 1] = '\0';
+    }
+    
     if (strcmp(header[i], name1) == 0 || strcmp(header[i], name2) == 0)
     {
       if (nameField != -1)
@@ -302,6 +307,11 @@ processBodyLine(char line[LINE_LENGTH], const int totalField
   if (numFields != totalField) return false;
   
   strcpy(name, lineList[nameField]);
+  
+  if (name[strlen(name) - 1] == '\n')
+  {
+    name[strlen(name) - 1] = '\0';
+  }
   return true;
 }
 
