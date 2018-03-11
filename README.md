@@ -14,7 +14,7 @@
 &nbsp;&nbsp; File format: `<tweeter>` `:` `<count>` `\n` <br />
 * Provide an easy way to test whether maxTweeter outputs the correct map. <br />
 * `<answer_map>` is generated from `getPerTweeterCount` from HW3. <br />
-* mapCmp` ignores quotes in key. <br />
+* `mapCmp` ignores quotes in key. <br />
  
  
  
@@ -26,6 +26,7 @@
    * **"incosis_field_num.csv"**: first 101 lines from "cl-tweets-short.csv". Tweet #97 has 1 less field.
    * **"too_large.csv"**: 5 copies of "cl-tweets-short.csv".
    * **"empty.csv"**: empty file.
+   * **"too_many_tweeter.csv"**: "cl-tweets-short.csv" plus one extra tweeter.
 
 
 ### Current fuzzing progress:
