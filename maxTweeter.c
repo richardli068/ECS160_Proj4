@@ -41,6 +41,7 @@ bool processBodyLine(char line[LINE_LENGTH], const int totalField
                      , const int nameField, char name[LINE_LENGTH]);
 void printInvalidAndExit(void);
 void printError(short error);
+int compare(const void *s1, const void *s2);
 
 
 int main(int argc, const char * argv[]) {
@@ -67,7 +68,7 @@ int main(int argc, const char * argv[]) {
   {
     filePath = argv[1];
   }
-
+  
   // error code:
   // -1: No error
   //  1: Error opening file
@@ -92,9 +93,20 @@ int main(int argc, const char * argv[]) {
   }
   
   // valid csv
-  for (int i = 0; i < *size; i++)
+  qsort(maps, *size, sizeof(Map), compare);
+  if (*size < 10)
   {
-    printMap(maps[i]);
+    for (int i = 0; i < (*size); i++)
+    {
+      printMap(maps[i]);
+    }
+  }
+  else
+  {
+    for (int i = 0; i < 10; i++)
+    {
+      printMap(maps[i]);
+    }
   }
   return 0;
 }
@@ -119,7 +131,7 @@ isMapEmpty(const Map m)
 // return -1 if not found
 int
 hasKey(const Map maps[TWEETER_COUNT]
-           , const char name[LINE_LENGTH], const int size)
+       , const char name[LINE_LENGTH], const int size)
 {
   for (int i = 0; i < size; i++)
   {
@@ -209,7 +221,7 @@ isValid(const char* filePath, Map maps[TWEETER_COUNT], int* size)
   if (lineCount == 1) return 8;
   //----------------------------------------------------------------------------
   // Finish processing body
-
+  
   fclose(fp);
   return -1;
 }
@@ -369,4 +381,11 @@ void printError(short error)
     default:
       break;
   }
+}
+
+int compare(const void *s1, const void *s2)
+{
+  Map *m1 = (Map*) s1;
+  Map *m2 = (Map*) s2;
+  return m2->count - m1->count;
 }

@@ -1,5 +1,5 @@
 //
-//  main.cpp
+//  mapCmp.cpp
 //  mapCmp
 //
 //  Created by Richard Li on 3/10/18.
@@ -12,7 +12,7 @@
 #include <map>
 #include <cstring>
 
-void generateMap(std::fstream* fs, std::map<std::string, std::string> map);
+void generateMap(std::fstream* fs, std::map<std::string, std::string>* map);
 
 int main(int argc, const char * argv[]) {
   if (argc != 3)
@@ -31,8 +31,9 @@ int main(int argc, const char * argv[]) {
   std::fstream myFs(MYOUT);
   std::fstream answerFs(ANSWEROUT);
   
-  generateMap(&myFs, myMap);
-  generateMap(&answerFs, answerMap);
+  generateMap(&myFs, &myMap);
+  generateMap(&answerFs, &answerMap);
+  
   if (myMap == answerMap)
   {
     std::cout << "True" << std::endl;
@@ -44,7 +45,7 @@ int main(int argc, const char * argv[]) {
   return 0;
 }
 
-void generateMap(std::fstream* fs, std::map<std::string, std::string> map)
+void generateMap(std::fstream* fs, std::map<std::string, std::string>* map)
 {
   std::string line;
   std::string key, value;
@@ -58,7 +59,7 @@ void generateMap(std::fstream* fs, std::map<std::string, std::string> map)
       key = key.substr(1, key.length() - 2);
     }
     value = line.substr(index + 1);
-    map.insert(std::pair<std::string, std::string>(key, value));
+    map->insert(std::pair<std::string, std::string>(key, value));
   }
   
 //  print map
